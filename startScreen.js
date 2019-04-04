@@ -18,7 +18,7 @@ class startScreen extends Phaser.Scene {
         if(this.key_2.isDown){
             this.scene.start("main");
         } else if(this.key_3.isDown){
-            //this.scene.start("loadScreen");
+            // this.scene.start("loadScreen");
             this.scene.start("main");
         }
     }

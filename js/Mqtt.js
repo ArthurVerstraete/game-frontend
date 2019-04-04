@@ -1,43 +1,10 @@
 /*jshint esversion: 6 */
+arrayPlayers = [];
 class Mqtt {
   constructor(scene) {
     this.scene = scene;
     let mqtt = this;
     this.client = new Paho.MQTT.Client("mqtt.labict.be", 1884, "");
-
-    this.receivedMessage = {
-      Player: {
-        username: "",
-        movement: "forward",
-        dev_id: "",
-        action: 0,
-        joined: true
-      },
-      Controller: { addons: ["gatling gun", null, null], dev_id: "" }
-    };
-
-    this.dataFromServer = {
-      players: [
-        {
-          name: "rae",
-          tank: {
-            color: null,
-            addons: [null, null, null],
-            rotation: 1,
-            position: { x: 581.5767664977294, y: 460 }
-          }
-        },
-        {
-          name: "reee",
-          tank: {
-            color: null,
-            addons: [null, null, null],
-            rotation: 1,
-            position: { x: 443.0127018922193, y: 100 }
-          }
-        }
-      ]
-    };
 
     // set callback handlers
     this.client.onConnectionLost = function(responseObject) {
@@ -48,8 +15,13 @@ class Mqtt {
     //console.log(this);
     this.client.onMessageArrived = function(message) {
       let receivedMessage = JSON.parse(message.payloadString);
-      //mqtt.scene.moveTank(receivedMessage);
-      //mqtt.scene.tankAction(receivedMessage);
+
+      Object.keys(receivedMessage.players).forEach(player => {
+        if (!arrayPlayers[player]) {
+          arrayPlayers[player] = mqtt.scene.createTankSprite(receivedMessage);
+        }
+      });
+
       console.log(receivedMessage);
       mqtt.scene.setTankPosition(receivedMessage);
     };
